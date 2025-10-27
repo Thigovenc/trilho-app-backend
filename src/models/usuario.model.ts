@@ -2,10 +2,12 @@ import mongoose, { Schema, Document } from 'mongoose';
 import bcrypt from 'bcryptjs';
 
 // Interface para tipagem do Documento (TypeScript)
-export interface IUsuario extends Document {
+export interface IUsuario extends Document<mongoose.Types.ObjectId> {
   nome: string;
   email: string;
   senha: string;
+  createdAt: Date;
+  updatedAt: Date;
   // Método para comparar senhas
   compararSenha(senhaCandidata: string): Promise<boolean>;
 }
