@@ -28,16 +28,15 @@ export const registerUsuario = async (req: Request, res: Response) => {
 
     // 3. Formatar e retornar a resposta HTTP (Conforme Seção 7.1)
     // Omitimos o senhaHash e outros dados sensíveis da resposta
-    res.status(201).json({ 
+    res.status(201).json({
       usuario: {
         _id: usuario.id,
         nome: usuario.nome,
         email: usuario.email,
-        createdAt: usuario.createdAt
-      }, 
-      token 
+        createdAt: usuario.createdAt,
+      },
+      token,
     });
-
   } catch (error: any) {
     // 4. Tratar erros vindos do Serviço (ex: "E-mail já em uso")
     res.status(400).json({ message: error.message });
@@ -58,16 +57,15 @@ export const loginUsuario = async (req: Request, res: Response) => {
     const { usuario, token } = await authService.login(input);
 
     // 3. Formatar e retornar a resposta HTTP (Conforme Seção 7.1)
-    res.status(200).json({ 
+    res.status(200).json({
       usuario: {
         _id: usuario.id,
         nome: usuario.nome,
         email: usuario.email,
-        createdAt: usuario.createdAt
-      }, 
-      token 
+        createdAt: usuario.createdAt,
+      },
+      token,
     });
-
   } catch (error: any) {
     // 4. Tratar erros vindos do Serviço (ex: "Credenciais inválidas")
     res.status(401).json({ message: error.message });

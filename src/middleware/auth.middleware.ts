@@ -22,7 +22,11 @@ const usuarioRepo: IUsuarioRepository = new MongooseUsuarioRepository();
 /**
  * Middleware para verificar a autenticação via JWT
  */
-export const authMiddleware = async (req: IAuthRequest, res: Response, next: NextFunction) => {
+export const authMiddleware = async (
+  req: IAuthRequest,
+  res: Response,
+  next: NextFunction,
+) => {
   let token;
   const authHeader = req.headers.authorization;
 
@@ -37,17 +41,19 @@ export const authMiddleware = async (req: IAuthRequest, res: Response, next: Nex
       if (!jwtSecret) {
         throw new Error('JWT_SECRET não definido.');
       }
-      
+
       // Decodifica o payload. Se o token for inválido (expirado, assinatura errada),
       // o jwt.verify() vai disparar um erro que será pego pelo 'catch'.
       const decodificado = jwt.verify(token, jwtSecret) as { id: string };
 
       // 4. Verificar se o usuário do token ainda existe no banco
       const usuario = await usuarioRepo.findById(decodificado.id);
-      
+
       if (!usuario) {
-         // Se o usuário foi deletado, o token não é mais válido.
-         return res.status(401).json({ message: 'Autorização negada, usuário não encontrado.' });
+        // Se o usuário foi deletado, o token não é mais válido.
+        return res
+          .status(401)
+          .json({ message: 'Autorização negada, usuário não encontrado.' });
       }
 
       // 5. Anexar o ID do usuário à requisição (req)
@@ -57,7 +63,6 @@ export const authMiddleware = async (req: IAuthRequest, res: Response, next: Nex
 
       // 6. Passar para o próximo middleware/controlador da rota
       next();
-
     } catch (error) {
       console.error('Erro na autenticação do token:', error);
       res.status(401).json({ message: 'Autorização negada, token inválido.' });
@@ -66,6 +71,8 @@ export const authMiddleware = async (req: IAuthRequest, res: Response, next: Nex
 
   // Se não houver 'authHeader' ou não começar com 'Bearer'
   if (!token) {
-    res.status(401).json({ message: 'Autorização negada, token não fornecido.' });
+    res
+      .status(401)
+      .json({ message: 'Autorização negada, token não fornecido.' });
   }
 };

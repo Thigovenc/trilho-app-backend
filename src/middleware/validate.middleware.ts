@@ -6,7 +6,8 @@ import { z } from 'zod';
  * Ele recebe um schema Zod e retorna um middleware Express
  * que valida a requisição contra esse schema.
  */
-const validate = (schema: z.Schema) => 
+const validate =
+  (schema: z.Schema) =>
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       // O Zod valida o corpo, query e params da requisição
@@ -19,7 +20,6 @@ const validate = (schema: z.Schema) =>
       // Se a validação for bem-sucedida, passa para o próximo middleware
       // (que será o nosso controlador)
       return next();
-
     } catch (error: any) {
       // Se a validação falhar, o Zod dispara um erro.
       // Retornamos um erro 400 com os detalhes.

@@ -35,7 +35,6 @@ export class Usuario {
   // O "Construtor Público" (Static Factory Method)
   // É async para lidar com o hashing da senha
   public static async create(props: IUsuarioCreateProps): Promise<Usuario> {
-    
     // 1. Chama o método de validação centralizado
     this.validate(props);
 
@@ -71,7 +70,7 @@ export class Usuario {
     // (Nota: Zod já checou o 'required' e 'min:3')
     // Aqui poderiam entrar regras de negócio, ex:
     if (nome.toLowerCase() === 'admin') {
-       throw new Error('Nome de usuário "admin" não é permitido.');
+      throw new Error('Nome de usuário "admin" não é permitido.');
     }
   }
 
@@ -79,7 +78,7 @@ export class Usuario {
     // (Nota: Zod já checou o 'required' e o formato)
     // Aqui poderiam entrar regras de negócio, ex:
     if (email.endsWith('@dominio-proibido.com')) {
-       throw new Error('Este domínio de e-mail não é permitido.');
+      throw new Error('Este domínio de e-mail não é permitido.');
     }
   }
 

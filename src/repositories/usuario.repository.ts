@@ -1,4 +1,6 @@
-import UsuarioModel, { IUsuario as IUsuarioModel } from '../models/usuario.model';
+import UsuarioModel, {
+  IUsuario as IUsuarioModel,
+} from '../models/usuario.model';
 import { Usuario } from '../domain/entities/usuario.entity';
 import { IUsuarioRepository } from '../domain/repositories/IUsuario.repository';
 
@@ -29,11 +31,10 @@ const toDomain = (model: IUsuarioModel): Usuario => {
     nome: model.nome,
     email: model.email,
     // Cuidado: 'senha' só vem se pedirmos com .select('+senha')
-    senhaHash: model.senha, 
+    senhaHash: model.senha,
     createdAt: model.createdAt,
   });
 };
-
 
 // --- Implementação Concreta (O "Adaptador") ---
 
@@ -42,7 +43,6 @@ const toDomain = (model: IUsuarioModel): Usuario => {
  * usando Mongoose. Ela sabe como falar com o MongoDB.
  */
 export class MongooseUsuarioRepository implements IUsuarioRepository {
-  
   /**
    * Salva uma nova entidade de usuário no banco
    */

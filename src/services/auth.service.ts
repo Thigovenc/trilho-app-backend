@@ -24,7 +24,9 @@ export class AuthService {
    */
   public async register(input: RegisterInput) {
     // 1. Verificar se o e-mail já existe (Lógica do Serviço)
-    const emailExistente = await this.usuarioRepository.findByEmail(input.email);
+    const emailExistente = await this.usuarioRepository.findByEmail(
+      input.email,
+    );
     if (emailExistente) {
       throw new Error('Este e-mail já está em uso');
     }

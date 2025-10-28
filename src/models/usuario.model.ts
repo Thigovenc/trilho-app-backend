@@ -13,26 +13,29 @@ export interface IUsuario extends Document<mongoose.Types.ObjectId> {
 }
 
 // Schema Mongoose [cite: 77]
-const UsuarioSchema: Schema = new Schema({
-  nome: {
-    type: String,
-    required: true,
+const UsuarioSchema: Schema = new Schema(
+  {
+    nome: {
+      type: String,
+      required: true,
+    },
+    email: {
+      type: String,
+      required: true,
+      unique: true, // [cite: 77]
+      lowercase: true,
+      trim: true,
+    },
+    senha: {
+      type: String,
+      required: true,
+      select: false, // Para não retornar a senha em queries por padrão
+    },
   },
-  email: {
-    type: String,
-    required: true,
-    unique: true, // [cite: 77]
-    lowercase: true,
-    trim: true,
+  {
+    timestamps: true, // Adiciona createdAt e updatedAt
   },
-  senha: {
-    type: String,
-    required: true,
-    select: false, // Para não retornar a senha em queries por padrão
-  },
-}, {
-  timestamps: true, // Adiciona createdAt e updatedAt
-});
+);
 
 // Exportar o modelo
 const Usuario = mongoose.model<IUsuario>('Usuario', UsuarioSchema);

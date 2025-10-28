@@ -1,0 +1,16 @@
+{
+  // 1. Instale a extensão "Prettier - Code formatter" (ID: esbenp.prettier-vscode) no VS Code.
+
+  // 2. Define o Prettier como o formatador padrão para arquivos TypeScript
+  "[typescript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  
+  // 3. Ativa a formatação automática ao salvar
+  "editor.formatOnSave": true,
+
+  // 4. (Bônus) Faz o ESLint corrigir erros "corrigíveis" ao salvar
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "explicit"
+  }
+}

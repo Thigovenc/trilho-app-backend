@@ -1,43 +1,55 @@
 import mongoose, { Schema, Document } from 'mongoose';
-
-// Interface para tipagem do Documento (TypeScript)
-export interface IHabito extends Document {
-  usuarioId: mongoose.Types.ObjectId; // Chave estrangeira [cite: 79]
-  nome: string; // [cite: 79]
-  cor: string; // [cite: 80]
-  maiorSequencia: number; // [cite: 80]
-  datasDeConclusao: Date[]; // [cite: 80]
+import { EnumHabitColor, EnumHabitIcon } from '../domain/enums/habito.enums';
+export interface IHabito extends Document<mongoose.Types.ObjectId> {
+  usuarioId: mongoose.Types.ObjectId;
+  nome: string;
+  cor: EnumHabitColor;
+  icone: EnumHabitIcon;
+  maiorSequencia: number;
+  datasDeConclusao: Date[];
+  createdAt: Date;
+  updatedAt: Date;
 }
 
-// Schema Mongoose [cite: 79, 80]
-const HabitoSchema: Schema = new Schema({
-  usuarioId: {
-    type: Schema.Types.ObjectId,
-    ref: 'Usuario', // Referência ao modelo Usuario [cite: 79]
-    required: true,
-    index: true, // Otimiza consultas por usuário
+const HabitoSchema: Schema = new Schema(
+  {
+    usuarioId: {
+      type: Schema.Types.ObjectId,
+      ref: 'Usuario',
+      required: true,
+      index: true,
+    },
+    nome: {
+      type: String,
+      required: [true, 'O nome do hábito é obrigatório'],
+      trim: true,
+    },
+    cor: {
+      // Modificado:
+      type: String,
+      enum: Object.values(EnumHabitColor),
+      default: EnumHabitColor.BLUE, // Default baseado na sua imagem
+    },
+    icone: {
+      // Adicionado:
+      type: String,
+      enum: Object.values(EnumHabitIcon),
+      default: EnumHabitIcon.SAVE, // Default baseado na sua imagem
+    },
+    maiorSequencia: {
+      type: Number,
+      default: 0,
+      min: 0,
+    },
+    datasDeConclusao: {
+      type: [Date],
+      default: [],
+    },
   },
-  nome: {
-    type: String,
-    required: true,
-    trim: true,
+  {
+    timestamps: true, // Garante createdAt e updatedAt
   },
-  cor: {
-    type: String,
-    default: '#FFFFFF', // Uma cor padrão
-  },
-  maiorSequencia: {
-    type: Number,
-    default: 0, // [cite: 80]
-  },
-  datasDeConclusao: {
-    type: [Date], // Array de Datas [cite: 80]
-    default: [],
-  },
-}, {
-  timestamps: true,
-});
+);
 
-// Exportar o modelo
 const Habito = mongoose.model<IHabito>('Habito', HabitoSchema);
 export default Habito;

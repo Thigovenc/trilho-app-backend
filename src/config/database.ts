@@ -1,11 +1,10 @@
 import mongoose from 'mongoose';
 
 // TODO: Mover a URI para variáveis de ambiente (.env)
-const MONGO_URI = String(process.env.MONGO_URI)
+const MONGO_URI = String(process.env.MONGO_URI);
 
 const connectDB = async () => {
   try {
-
     if (!MONGO_URI) {
       console.error('Database URI not provided');
       return;

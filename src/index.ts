@@ -4,12 +4,11 @@ import express, { Application, Request, Response } from 'express';
 import connectDB from './config/database';
 import usuarioRoutes from './routes/usuario.routes';
 
-
 connectDB();
 
 const app: Application = express();
 
-app.use(express.json()); 
+app.use(express.json());
 
 app.get('/', (req: Request, res: Response) => {
   res.status(200).json({ message: 'API do Projeto Trilho está rodando!' });
@@ -23,4 +22,4 @@ app.listen(PORT, () => {
   console.log(`Servidor escutando na porta ${PORT}`);
 });
 
-export default app; 
+export default app;

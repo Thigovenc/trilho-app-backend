@@ -18,11 +18,7 @@ export const gerarToken = (usuarioId: string): string => {
 
   // Definimos a expiração (ex: 7 dias),
   // o que é bom para um aplicativo mobile.
-  const token = jwt.sign(
-    payload,
-    secret,
-    { expiresIn: '7d' } 
-  );
+  const token = jwt.sign(payload, secret, { expiresIn: '7d' });
 
   return token;
 };
