@@ -34,27 +34,6 @@ const UsuarioSchema: Schema = new Schema({
   timestamps: true, // Adiciona createdAt e updatedAt
 });
 
-// Middleware (pre-save hook) para criptografar a senha 
-UsuarioSchema.pre<IUsuario>('save', async function (next) {
-  // 'this' é o documento do usuário que está sendo salvo
-  if (!this.isModified('senha')) {
-    return next();
-  }
-  
-  try {
-    const salt = await bcrypt.genSalt(10);
-    this.senha = await bcrypt.hash(this.senha, salt);
-    next();
-  } catch (error: any) {
-    next(error);
-  }
-});
-
-// Método para comparar a senha fornecida no login com o hash salvo
-UsuarioSchema.methods.compararSenha = async function (senhaCandidata: string): Promise<boolean> {
-  return bcrypt.compare(senhaCandidata, this.senha);
-};
-
 // Exportar o modelo
 const Usuario = mongoose.model<IUsuario>('Usuario', UsuarioSchema);
 export default Usuario;
