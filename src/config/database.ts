@@ -15,8 +15,12 @@ const connectDB = async () => {
       console.info(`error to connect - MongoDB: Error: ${err.message}`);
     });
     await mongoose.connect(MONGO_URI);
-  } catch (err: any) {
-    console.error('Erro ao conectar ao MongoDB:', err.message);
+  } catch (err: unknown) {
+    if (err instanceof Error) {
+      console.error('Erro ao conectar ao MongoDB:', err.message);
+    } else {
+      console.error('Erro ao conectar ao MongoDB:', err);
+    }
     process.exit(1);
   }
 };

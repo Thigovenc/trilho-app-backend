@@ -1,5 +1,4 @@
 import mongoose, { Schema, Document } from 'mongoose';
-import bcrypt from 'bcryptjs';
 
 // Interface para tipagem do Documento (TypeScript)
 export interface IUsuario extends Document<mongoose.Types.ObjectId> {
