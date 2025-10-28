@@ -30,7 +30,6 @@ export const registerUsuario = async (req: Request, res: Response) => {
     });
   } catch (error: unknown) {
     if (error instanceof Error) {
-      // Pega erros como "Este e-mail já está em uso"
       res.status(400).json({ message: error.message });
     } else {
       res.status(400).json({ message: 'Um erro desconhecido ocorreu' });
@@ -60,7 +59,6 @@ export const loginUsuario = async (req: Request, res: Response) => {
     });
   } catch (error: unknown) {
     if (error instanceof Error) {
-      // Pega erros como "Credenciais inválidas"
       res.status(401).json({ message: error.message });
     } else {
       res.status(401).json({ message: 'Um erro desconhecido ocorreu' });
