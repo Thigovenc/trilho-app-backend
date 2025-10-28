@@ -1,12 +1,5 @@
 import { Usuario } from '../entities/usuario.entity';
 
-/**
- * Esta é a "Porta" de Repositório (Princípio da Inversão de Dependência)
- * * Define o CONTRATO que qualquer classe de repositório de usuário
- * DEVE seguir, não importa se é Mongoose, Prisma, ou SQL.
- * * A Camada de Serviço (AuthService) dependerá DESTA interface,
- * e não de uma implementação concreta.
- */
 export interface IUsuarioRepository {
   /**
    * Salva uma nova entidade de usuário no banco
