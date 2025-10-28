@@ -1,6 +1,5 @@
 import mongoose from 'mongoose';
 
-// TODO: Mover a URI para variáveis de ambiente (.env)
 const MONGO_URI = String(process.env.MONGO_URI);
 
 const connectDB = async () => {
@@ -18,7 +17,6 @@ const connectDB = async () => {
     await mongoose.connect(MONGO_URI);
   } catch (err: any) {
     console.error('Erro ao conectar ao MongoDB:', err.message);
-    // Encerrar o processo em caso de falha na conexão
     process.exit(1);
   }
 };
