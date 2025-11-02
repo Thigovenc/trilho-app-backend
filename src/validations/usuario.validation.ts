@@ -33,5 +33,22 @@ export const loginSchema = z.object({
   }),
 });
 
+export const updatePerfilSchema = z.object({
+  body: z
+    .object({
+      nome: z
+        .string()
+        .min(3, { message: 'O nome precisa ter no mínimo 3 caracteres' })
+        .optional(),
+
+      email: z.string().email('O e-mail fornecido não é válido').optional(),
+    })
+    .refine((data) => data.nome || data.email, {
+      message:
+        'Pelo menos um campo (nome ou email) deve ser fornecido para atualização.',
+    }),
+});
+
+export type UpdatePerfilInput = z.infer<typeof updatePerfilSchema>['body'];
 export type RegisterInput = z.infer<typeof registerSchema>['body'];
 export type LoginInput = z.infer<typeof loginSchema>['body'];

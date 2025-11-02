@@ -54,4 +54,21 @@ export class MongooseUsuarioRepository implements IUsuarioRepository {
 
     return toDomain(usuarioModel);
   }
+
+  async update(
+    usuarioId: string,
+    data: { nome?: string; email?: string },
+  ): Promise<Usuario | null> {
+    const usuarioModel = await UsuarioModel.findByIdAndUpdate(
+      usuarioId,
+      { $set: data },
+      { new: true },
+    );
+
+    if (!usuarioModel) {
+      return null;
+    }
+
+    return toDomain(usuarioModel);
+  }
 }

@@ -1,17 +1,15 @@
 import mongoose, { Schema, Document } from 'mongoose';
 
-// Interface para tipagem do Documento (TypeScript)
 export interface IUsuario extends Document<mongoose.Types.ObjectId> {
   nome: string;
   email: string;
   senha: string;
   createdAt: Date;
   updatedAt: Date;
-  // Método para comparar senhas
+
   compararSenha(senhaCandidata: string): Promise<boolean>;
 }
 
-// Schema Mongoose [cite: 77]
 const UsuarioSchema: Schema = new Schema(
   {
     nome: {
@@ -21,21 +19,20 @@ const UsuarioSchema: Schema = new Schema(
     email: {
       type: String,
       required: true,
-      unique: true, // [cite: 77]
+      unique: true,
       lowercase: true,
       trim: true,
     },
     senha: {
       type: String,
       required: true,
-      select: false, // Para não retornar a senha em queries por padrão
+      select: false,
     },
   },
   {
-    timestamps: true, // Adiciona createdAt e updatedAt
+    timestamps: true,
   },
 );
 
-// Exportar o modelo
 const Usuario = mongoose.model<IUsuario>('Usuario', UsuarioSchema);
 export default Usuario;
