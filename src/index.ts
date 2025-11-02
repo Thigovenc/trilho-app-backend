@@ -4,6 +4,7 @@ import express, { Application, Request, Response } from 'express';
 import connectDB from './config/database';
 import usuarioRoutes from './routes/usuario.routes';
 import habitoRoutes from './routes/habito.routes';
+import statsRoutes from './routes/stats.routes';
 
 connectDB();
 
@@ -17,6 +18,7 @@ app.get('/', (req: Request, res: Response) => {
 
 app.use('/api/usuarios', usuarioRoutes);
 app.use('/api/habitos', habitoRoutes);
+app.use('/api/stats', statsRoutes);
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
