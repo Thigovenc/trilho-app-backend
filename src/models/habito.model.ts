@@ -25,16 +25,14 @@ const HabitoSchema: Schema = new Schema(
       trim: true,
     },
     cor: {
-      // Modificado:
       type: String,
       enum: Object.values(EnumHabitColor),
-      default: EnumHabitColor.BLUE, // Default baseado na sua imagem
+      default: EnumHabitColor.BLUE,
     },
     icone: {
-      // Adicionado:
       type: String,
       enum: Object.values(EnumHabitIcon),
-      default: EnumHabitIcon.SAVE, // Default baseado na sua imagem
+      default: EnumHabitIcon.SAVE,
     },
     maiorSequencia: {
       type: Number,
@@ -47,7 +45,7 @@ const HabitoSchema: Schema = new Schema(
     },
   },
   {
-    timestamps: true, // Garante createdAt e updatedAt
+    timestamps: true,
   },
 );
 
