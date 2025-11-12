@@ -2,6 +2,7 @@ import { Habito } from '../domain/entities/habito.entity';
 import { IHabitoRepository } from '../domain/repositories/IHabito.repository';
 import { IUsuarioRepository } from '../domain/repositories/IUsuario.repository';
 import { EnumHabitColor, EnumHabitIcon } from '../domain/enums/habito.enums';
+import { EditarHabitoInput } from '../validations/habito.validation';
 
 export interface ICriarHabitoInput {
   nome: string;
@@ -61,6 +62,28 @@ export class HabitoService {
     }
 
     habito.marcarConcluido(new Date());
+
+    const habitoAtualizado = await this.habitoRepository.update(habito);
+
+    return habitoAtualizado;
+  }
+
+  public async editarHabito(
+    habitoId: string,
+    usuarioId: string,
+    input: EditarHabitoInput,
+  ): Promise<Habito> {
+    const habito = await this.habitoRepository.findById(habitoId);
+
+    if (!habito) {
+      throw new Error('Hábito não encontrado.');
+    }
+
+    if (habito.usuarioId !== usuarioId) {
+      throw new Error('Você não tem permissão para editar este hábito.');
+    }
+
+    habito.atualizarHabito(input);
 
     const habitoAtualizado = await this.habitoRepository.update(habito);
 
