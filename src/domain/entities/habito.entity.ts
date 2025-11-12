@@ -11,9 +11,9 @@ export interface IHabitoCreateProps {
 export class Habito {
   public readonly id?: string;
   public readonly usuarioId: string;
-  public readonly nome: string;
-  public readonly cor: EnumHabitColor;
-  public readonly icone: EnumHabitIcon;
+  public nome: string;
+  public cor: EnumHabitColor;
+  public icone: EnumHabitIcon;
   public maiorSequencia: number;
   public datasDeConclusao: Date[];
 
@@ -117,6 +117,25 @@ export class Habito {
 
     if (this.sequenciaAtual > this.maiorSequencia) {
       this.maiorSequencia = this.sequenciaAtual;
+    }
+  }
+
+  public atualizarHabito(props: {
+    nome?: string;
+    cor?: EnumHabitColor;
+    icone?: EnumHabitIcon;
+  }): void {
+    if (props.nome) {
+      Habito.validateNome(props.nome);
+      this.nome = props.nome;
+    }
+
+    if (props.cor) {
+      this.cor = props.cor;
+    }
+
+    if (props.icone) {
+      this.icone = props.icone;
     }
   }
 }
