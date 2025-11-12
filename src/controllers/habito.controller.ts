@@ -3,7 +3,10 @@ import { IAuthRequest } from '../middleware/auth.middleware';
 import { HabitoService } from '../services/habito.service';
 import { MongooseHabitoRepository } from '../repositories/habito.repository';
 import { MongooseUsuarioRepository } from '../repositories/usuario.repository';
-import { CriarHabitoInput } from '../validations/habito.validation';
+import {
+  CriarHabitoInput,
+  EditarHabitoInput,
+} from '../validations/habito.validation';
 
 const habitoRepo = new MongooseHabitoRepository();
 const usuarioRepo = new MongooseUsuarioRepository();
@@ -82,6 +85,33 @@ export const marcarComoConcluido = async (req: IAuthRequest, res: Response) => {
       res.status(400).json({ message: error.message });
     } else {
       res.status(500).json({ message: 'Erro interno no servidor.' });
+    }
+  }
+};
+
+/**
+ * @route   PUT /api/habitos/:id
+ * @desc    Edita um hábito existente
+ * @access  Privado
+ */
+export const editarHabito = async (req: IAuthRequest, res: Response) => {
+  try {
+    const usuarioId = req.usuario!.id;
+    const habitoId = req.params.id;
+    const input: EditarHabitoInput = req.body;
+
+    const habitoAtualizado = await habitoService.editarHabito(
+      habitoId,
+      usuarioId,
+      input,
+    );
+
+    res.status(200).json({ habito: habitoAtualizado });
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      res.status(400).json({ message: error.message });
+    } else {
+      res.status(500).json({ message: 'Erro interno.' });
     }
   }
 };
