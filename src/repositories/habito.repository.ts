@@ -13,6 +13,7 @@ const toPersistence = (habito: Habito) => {
     icone: habito.icone,
     maiorSequencia: habito.maiorSequencia,
     datasDeConclusao: habito.datasDeConclusao,
+    isDeleted: habito.isDeleted,
   };
 };
 
@@ -25,6 +26,7 @@ const toDomain = (model: IHabitoModel): Habito => {
     icone: model.icone as EnumHabitIcon,
     maiorSequencia: model.maiorSequencia,
     datasDeConclusao: model.datasDeConclusao,
+    isDeleted: model.isDeleted,
   });
 };
 
@@ -39,20 +41,21 @@ export class MongooseHabitoRepository implements IHabitoRepository {
   }
 
   async findByUsuarioId(usuarioId: string): Promise<Habito[]> {
-    const habitosModel = await HabitoModel.find({ usuarioId }).sort({
-      createdAt: -1,
-    });
+    const habitosModel = await HabitoModel.find({
+      usuarioId,
+      isDeleted: false,
+    }).sort({ createdAt: -1 });
 
     return habitosModel.map(toDomain);
   }
 
   async findById(id: string): Promise<Habito | null> {
-    const habitoModel = await HabitoModel.findById(id);
+    const habitoModel = await HabitoModel.findOne({
+      _id: id,
+      isDeleted: false,
+    });
 
-    if (!habitoModel) {
-      return null;
-    }
-
+    if (!habitoModel) return null;
     return toDomain(habitoModel);
   }
 
@@ -70,5 +73,15 @@ export class MongooseHabitoRepository implements IHabitoRepository {
     }
 
     return toDomain(habitoModel);
+  }
+
+  async delete(habitoId: string): Promise<boolean> {
+    const resultado = await HabitoModel.findByIdAndUpdate(
+      habitoId,
+      { isDeleted: true },
+      { new: true },
+    );
+
+    return !!resultado;
   }
 }

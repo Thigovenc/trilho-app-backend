@@ -16,7 +16,7 @@ export class Habito {
   public icone: EnumHabitIcon;
   public maiorSequencia: number;
   public datasDeConclusao: Date[];
-
+  public isDeleted: boolean;
   public sequenciaAtual: number;
 
   private constructor(props: {
@@ -27,6 +27,7 @@ export class Habito {
     icone: EnumHabitIcon;
     maiorSequencia: number;
     datasDeConclusao: Date[];
+    isDeleted?: boolean;
   }) {
     this.id = props.id;
     this.usuarioId = props.usuarioId;
@@ -35,7 +36,7 @@ export class Habito {
     this.icone = props.icone;
     this.maiorSequencia = props.maiorSequencia;
     this.datasDeConclusao = props.datasDeConclusao;
-
+    this.isDeleted = props.isDeleted || false;
     this.sequenciaAtual = this.calcularSequenciaAtual();
   }
 
@@ -59,6 +60,7 @@ export class Habito {
     icone: EnumHabitIcon;
     maiorSequencia: number;
     datasDeConclusao: Date[];
+    isDeleted: boolean;
   }): Habito {
     return new Habito(props);
   }
@@ -137,5 +139,9 @@ export class Habito {
     if (props.icone) {
       this.icone = props.icone;
     }
+  }
+
+  public marcarComoDeletado(): void {
+    this.isDeleted = true;
   }
 }

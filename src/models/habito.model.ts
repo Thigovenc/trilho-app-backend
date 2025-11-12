@@ -7,6 +7,7 @@ export interface IHabito extends Document<mongoose.Types.ObjectId> {
   icone: EnumHabitIcon;
   maiorSequencia: number;
   datasDeConclusao: Date[];
+  isDeleted: boolean;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -43,9 +44,14 @@ const HabitoSchema: Schema = new Schema(
       type: [Date],
       default: [],
     },
+    isDeleted: {
+      type: Boolean,
+      default: false,
+    },
   },
   {
     timestamps: true,
+    versionKey: false,
   },
 );
 
