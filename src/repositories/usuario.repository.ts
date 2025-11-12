@@ -3,10 +3,11 @@ import UsuarioModel, {
 } from '../models/usuario.model';
 import { Usuario } from '../domain/entities/usuario.entity';
 import { IUsuarioRepository } from '../domain/repositories/IUsuario.repository';
+import mongoose from 'mongoose';
 
 const toPersistence = (usuario: Usuario) => {
   return {
-    _id: usuario.id,
+    id: new mongoose.Types.ObjectId(usuario.id),
     nome: usuario.nome,
     email: usuario.email,
     senha: usuario.senhaHash,

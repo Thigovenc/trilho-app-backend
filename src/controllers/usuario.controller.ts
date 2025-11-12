@@ -24,7 +24,7 @@ export const registerUsuario = async (req: Request, res: Response) => {
 
     res.status(201).json({
       usuario: {
-        _id: usuario.id,
+        id: usuario.id,
         nome: usuario.nome,
         email: usuario.email,
         createdAt: usuario.createdAt,
@@ -48,7 +48,7 @@ export const loginUsuario = async (req: Request, res: Response) => {
 
     res.status(200).json({
       usuario: {
-        _id: usuario.id,
+        id: usuario.id,
         nome: usuario.nome,
         email: usuario.email,
         createdAt: usuario.createdAt,
@@ -73,7 +73,7 @@ export const updatePerfil = async (req: IAuthRequest, res: Response) => {
 
     res.status(200).json({
       usuario: {
-        _id: usuario.id,
+        id: usuario.id,
         nome: usuario.nome,
         email: usuario.email,
         createdAt: usuario.createdAt,
