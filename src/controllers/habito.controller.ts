@@ -55,3 +55,33 @@ export const listarHabitos = async (req: IAuthRequest, res: Response) => {
     }
   }
 };
+
+/**
+ * @route   POST /api/habitos/:id/complete
+ * @desc    Marca um hábito como concluído hoje
+ * @access  Privado
+ */
+export const marcarComoConcluido = async (req: IAuthRequest, res: Response) => {
+  try {
+    const usuarioId = req.usuario!.id;
+    const habitoId = req.params.id;
+
+    const habitoAtualizado = await habitoService.marcarComoConcluido(
+      habitoId,
+      usuarioId,
+    );
+
+    res.status(200).json({
+      mensagem: 'Hábito concluído com sucesso!',
+      sequenciaAtual: habitoAtualizado.sequenciaAtual,
+      maiorSequencia: habitoAtualizado.maiorSequencia,
+      habito: habitoAtualizado,
+    });
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      res.status(400).json({ message: error.message });
+    } else {
+      res.status(500).json({ message: 'Erro interno no servidor.' });
+    }
+  }
+};
