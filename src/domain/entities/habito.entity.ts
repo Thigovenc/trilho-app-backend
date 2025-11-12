@@ -1,4 +1,4 @@
-import { differenceInDays, startOfDay } from 'date-fns';
+import { differenceInDays, isSameDay, startOfDay } from 'date-fns';
 import { EnumHabitColor, EnumHabitIcon } from '../enums/habito.enums';
 
 export interface IHabitoCreateProps {
@@ -98,5 +98,25 @@ export class Habito {
       }
     }
     return sequencia;
+  }
+
+  public marcarConcluido(data: Date): void {
+    const dataConclusao = startOfDay(data);
+
+    const jaConcluido = this.datasDeConclusao.some((d) =>
+      isSameDay(d, dataConclusao),
+    );
+
+    if (jaConcluido) {
+      throw new Error('Hábito já concluído nesta data.');
+    }
+
+    this.datasDeConclusao.push(dataConclusao);
+
+    this.sequenciaAtual = this.calcularSequenciaAtual();
+
+    if (this.sequenciaAtual > this.maiorSequencia) {
+      this.maiorSequencia = this.sequenciaAtual;
+    }
   }
 }
