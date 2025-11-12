@@ -45,4 +45,25 @@ export class HabitoService {
 
     return habitos;
   }
+
+  public async marcarComoConcluido(
+    habitoId: string,
+    usuarioId: string,
+  ): Promise<Habito> {
+    const habito = await this.habitoRepository.findById(habitoId);
+
+    if (!habito) {
+      throw new Error('Hábito não encontrado.');
+    }
+
+    if (habito.usuarioId !== usuarioId) {
+      throw new Error('Você não tem permissão para editar este hábito.');
+    }
+
+    habito.marcarConcluido(new Date());
+
+    const habitoAtualizado = await this.habitoRepository.update(habito);
+
+    return habitoAtualizado;
+  }
 }
