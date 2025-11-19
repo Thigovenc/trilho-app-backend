@@ -26,14 +26,23 @@ export class HabitoService {
 
   public async criarHabito(input: ICriarHabitoInput): Promise<Habito> {
     const usuario = await this.usuarioRepository.findById(input.usuarioId);
+
     if (!usuario) {
       throw new Error('Usuário não encontrado.');
     }
+
+    const totalExistente = await this.habitoRepository.countByUsuarioId(
+      input.usuarioId,
+    );
+
+    const novaOrdem = totalExistente;
+
     const novoHabito = Habito.create({
       nome: input.nome,
       cor: input.cor,
       icone: input.icone,
       usuarioId: input.usuarioId,
+      ordem: novaOrdem,
     });
 
     const habitoSalvo = await this.habitoRepository.save(novoHabito);
@@ -89,5 +98,22 @@ export class HabitoService {
     const habitoAtualizado = await this.habitoRepository.update(habito);
 
     return habitoAtualizado;
+  }
+
+  public async reordenarHabitos(
+    usuarioId: string,
+    listaIds: string[],
+  ): Promise<void> {
+    const usuarioExiste = await this.usuarioRepository.findById(usuarioId);
+
+    if (!usuarioExiste) {
+      throw new Error('Usuário não encontrado.');
+    }
+
+    const updates = listaIds.map((habitoId, index) => {
+      return this.habitoRepository.updateOrdem(habitoId, usuarioId, index);
+    });
+
+    await Promise.all(updates);
   }
 }

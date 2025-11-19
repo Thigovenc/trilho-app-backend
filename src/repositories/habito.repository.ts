@@ -14,6 +14,7 @@ const toPersistence = (habito: Habito) => {
     maiorSequencia: habito.maiorSequencia,
     datasDeConclusao: habito.datasDeConclusao,
     isDeleted: habito.isDeleted,
+    ordem: habito.ordem,
   };
 };
 
@@ -27,6 +28,7 @@ const toDomain = (model: IHabitoModel): Habito => {
     maiorSequencia: model.maiorSequencia,
     datasDeConclusao: model.datasDeConclusao,
     isDeleted: model.isDeleted,
+    ordem: model.ordem,
   });
 };
 
@@ -44,7 +46,7 @@ export class MongooseHabitoRepository implements IHabitoRepository {
     const habitosModel = await HabitoModel.find({
       usuarioId,
       isDeleted: false,
-    }).sort({ createdAt: -1 });
+    }).sort({ ordem: 1 });
 
     return habitosModel.map(toDomain);
   }
@@ -83,5 +85,24 @@ export class MongooseHabitoRepository implements IHabitoRepository {
     );
 
     return !!resultado;
+  }
+
+  async countByUsuarioId(usuarioId: string): Promise<number> {
+    const count = await HabitoModel.countDocuments({
+      usuarioId,
+      isDeleted: false,
+    });
+    return count;
+  }
+
+  async updateOrdem(
+    habitoId: string,
+    usuarioId: string,
+    novaOrdem: number,
+  ): Promise<void> {
+    await HabitoModel.findOneAndUpdate(
+      { _id: habitoId, usuarioId: usuarioId },
+      { ordem: novaOrdem },
+    );
   }
 }

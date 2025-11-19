@@ -40,5 +40,16 @@ export const editarHabitoSchema = z.object({
   }),
 });
 
+export const reordenarHabitosSchema = z.object({
+  body: z.object({
+    ordemHabitos: z.array(z.string().min(1), {
+      message: 'A lista de IDs é obrigatória.',
+    }),
+  }),
+});
+
 export type CriarHabitoInput = z.infer<typeof criarHabitoSchema>['body'];
 export type EditarHabitoInput = z.infer<typeof editarHabitoSchema>['body'];
+export type ReordenarHabitosInput = z.infer<
+  typeof reordenarHabitosSchema
+>['body'];

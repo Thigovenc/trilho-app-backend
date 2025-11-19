@@ -8,6 +8,7 @@ export interface IHabito extends Document<mongoose.Types.ObjectId> {
   maiorSequencia: number;
   datasDeConclusao: Date[];
   isDeleted: boolean;
+  ordem: number;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -47,6 +48,10 @@ const HabitoSchema: Schema = new Schema(
     isDeleted: {
       type: Boolean,
       default: false,
+    },
+    ordem: {
+      type: Number,
+      default: 0,
     },
   },
   {

@@ -4,12 +4,14 @@ import validate from '../middleware/validate.middleware';
 import {
   criarHabitoSchema,
   editarHabitoSchema,
+  reordenarHabitosSchema,
 } from '../validations/habito.validation';
 import {
   criarHabito,
   editarHabito,
   listarHabitos,
   marcarComoConcluido,
+  reordenarHabitos,
 } from '../controllers/habito.controller';
 
 const router = Router();
@@ -26,5 +28,8 @@ router.post('/:id/complete', marcarComoConcluido);
 
 // @route   PUT /api/habitos/:id
 router.put('/:id', validate(editarHabitoSchema), editarHabito);
+
+// @route   PATCH /api/habitos/reordenar
+router.patch('/reordenar', validate(reordenarHabitosSchema), reordenarHabitos);
 
 export default router;

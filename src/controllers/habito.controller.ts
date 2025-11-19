@@ -6,6 +6,7 @@ import { MongooseUsuarioRepository } from '../repositories/usuario.repository';
 import {
   CriarHabitoInput,
   EditarHabitoInput,
+  ReordenarHabitosInput,
 } from '../validations/habito.validation';
 
 const habitoRepo = new MongooseHabitoRepository();
@@ -113,5 +114,21 @@ export const editarHabito = async (req: IAuthRequest, res: Response) => {
     } else {
       res.status(500).json({ message: 'Erro interno.' });
     }
+  }
+};
+
+/**
+ * @route   PATCH /api/habitos/reordenar
+ */
+export const reordenarHabitos = async (req: IAuthRequest, res: Response) => {
+  try {
+    const usuarioId = req.usuario!.id;
+    const { ordemHabitos } = req.body as ReordenarHabitosInput;
+
+    await habitoService.reordenarHabitos(usuarioId, ordemHabitos);
+
+    res.status(200).json({ message: 'Ordem atualizada com sucesso.' });
+  } catch (error: unknown) {
+    res.status(500).json({ message: 'Erro ao reordenar.' });
   }
 };

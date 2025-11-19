@@ -6,6 +6,7 @@ export interface IHabitoCreateProps {
   nome: string;
   cor?: EnumHabitColor;
   icone?: EnumHabitIcon;
+  ordem?: number;
 }
 
 export class Habito {
@@ -18,6 +19,7 @@ export class Habito {
   public datasDeConclusao: Date[];
   public isDeleted: boolean;
   public sequenciaAtual: number;
+  public ordem: number;
 
   private constructor(props: {
     id?: string;
@@ -28,6 +30,7 @@ export class Habito {
     maiorSequencia: number;
     datasDeConclusao: Date[];
     isDeleted?: boolean;
+    ordem: number;
   }) {
     this.id = props.id;
     this.usuarioId = props.usuarioId;
@@ -37,6 +40,7 @@ export class Habito {
     this.maiorSequencia = props.maiorSequencia;
     this.datasDeConclusao = props.datasDeConclusao;
     this.isDeleted = props.isDeleted || false;
+    this.ordem = props.ordem;
     this.sequenciaAtual = this.calcularSequenciaAtual();
   }
 
@@ -49,6 +53,7 @@ export class Habito {
       icone: props.icone || EnumHabitIcon.SAVE,
       maiorSequencia: 0,
       datasDeConclusao: [],
+      ordem: props.ordem || 0,
     });
   }
 
@@ -61,6 +66,7 @@ export class Habito {
     maiorSequencia: number;
     datasDeConclusao: Date[];
     isDeleted: boolean;
+    ordem: number;
   }): Habito {
     return new Habito(props);
   }
