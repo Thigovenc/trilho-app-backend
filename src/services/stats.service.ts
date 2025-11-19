@@ -13,7 +13,8 @@ export class StatsService {
   }
 
   public async getStats(usuarioId: string): Promise<IGlobalStats> {
-    const habitos = await this.habitoRepository.findByUsuarioId(usuarioId);
+    const habitos =
+      await this.habitoRepository.findHabitsByUsuarioId(usuarioId);
 
     if (habitos.length === 0) {
       return {

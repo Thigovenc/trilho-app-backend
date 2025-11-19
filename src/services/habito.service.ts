@@ -42,7 +42,8 @@ export class HabitoService {
   }
 
   public async listarHabitosPorUsuario(usuarioId: string): Promise<Habito[]> {
-    const habitos = await this.habitoRepository.findByUsuarioId(usuarioId);
+    const habitos =
+      await this.habitoRepository.findHabitsByUsuarioId(usuarioId);
 
     return habitos;
   }

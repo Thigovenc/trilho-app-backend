@@ -40,7 +40,7 @@ export class MongooseHabitoRepository implements IHabitoRepository {
     return toDomain(habitoSalvo);
   }
 
-  async findByUsuarioId(usuarioId: string): Promise<Habito[]> {
+  async findHabitsByUsuarioId(usuarioId: string): Promise<Habito[]> {
     const habitosModel = await HabitoModel.find({
       usuarioId,
       isDeleted: false,
