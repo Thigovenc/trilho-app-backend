@@ -1,4 +1,4 @@
-import { differenceInDays, isSameDay, startOfDay } from 'date-fns';
+import { differenceInDays} from 'date-fns';
 import { EnumHabitColor, EnumHabitIcon } from '../enums/habito.enums';
 
 export interface IHabitoCreateProps {
@@ -77,18 +77,32 @@ export class Habito {
     }
   }
 
+  /**
+   * Pega apenas o dia/mês/ano de uma data, ignorando horas
+   * Retorna uma string no formato YYYY-MM-DD para comparação
+   */
+  private static getDateOnly(date: Date): string {
+    const year = date.getUTCFullYear();
+    const month = String(date.getUTCMonth() + 1).padStart(2, '0');
+    const day = String(date.getUTCDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  }
+
   private calcularSequenciaAtual(): number {
     if (this.datasDeConclusao.length === 0) {
       return 0;
     }
+
     const datasOrdenadas = [...this.datasDeConclusao].sort(
       (a, b) => b.getTime() - a.getTime(),
     );
+
     let sequencia = 0;
-    const hoje = startOfDay(new Date());
-    const dataMaisRecente = startOfDay(datasOrdenadas[0]);
+    const hoje = new Date();
+    const dataMaisRecente = datasOrdenadas[0];
 
     const diasDesdeUltimaConclusao = differenceInDays(hoje, dataMaisRecente);
+
     if (diasDesdeUltimaConclusao > 1) {
       return 0;
     }
@@ -96,8 +110,8 @@ export class Habito {
     sequencia = 1;
 
     for (let i = 1; i < datasOrdenadas.length; i++) {
-      const diaAnterior = startOfDay(datasOrdenadas[i - 1]);
-      const diaAtual = startOfDay(datasOrdenadas[i]);
+      const diaAnterior = datasOrdenadas[i - 1];
+      const diaAtual = datasOrdenadas[i];
 
       if (differenceInDays(diaAnterior, diaAtual) === 1) {
         sequencia++;
@@ -109,17 +123,21 @@ export class Habito {
   }
 
   public marcarConcluido(data: Date): void {
-    const dataConclusao = startOfDay(data);
+    // Pega apenas a data (dia/mês/ano) ignorando horas
+    const dataHojeStr = Habito.getDateOnly(data);
 
-    const jaConcluido = this.datasDeConclusao.some((d) =>
-      isSameDay(d, dataConclusao),
-    );
+    // Verifica se já foi concluído nesta data
+    const jaConcluido = this.datasDeConclusao.some((d) => {
+      const dataExistenteStr = Habito.getDateOnly(d);
+      return dataExistenteStr === dataHojeStr;
+    });
 
     if (jaConcluido) {
       throw new Error('Hábito já concluído nesta data.');
     }
 
-    this.datasDeConclusao.push(dataConclusao);
+    // Salva a data atual (com horário) - será normalizada na hora de comparar
+    this.datasDeConclusao.push(data);
 
     this.sequenciaAtual = this.calcularSequenciaAtual();
 
