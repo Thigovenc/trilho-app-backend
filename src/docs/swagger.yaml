@@ -1,0 +1,446 @@
+openapi: 3.0.0
+info:
+  title: Trilho App API
+  version: 1.0.0
+  description: API para gerenciamento de hábitos e usuários do projeto Trilho
+  contact:
+    name: Trilho Team
+
+servers:
+  - url: http://localhost:5000
+    description: Servidor de desenvolvimento
+
+tags:
+  - name: Usuários
+    description: Endpoints relacionados a usuários e autenticação
+  - name: Hábitos
+    description: Endpoints relacionados a hábitos
+  - name: Estatísticas
+    description: Endpoints relacionados a estatísticas
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    Usuario:
+      type: object
+      properties:
+        id:
+          type: string
+          description: ID do usuário
+        nome:
+          type: string
+          description: Nome do usuário
+        email:
+          type: string
+          format: email
+          description: Email do usuário
+        createdAt:
+          type: string
+          format: date-time
+          description: Data de criação
+
+    Habito:
+      type: object
+      properties:
+        id:
+          type: string
+          description: ID do hábito
+        usuarioId:
+          type: string
+          description: ID do usuário dono do hábito
+        nome:
+          type: string
+          description: Nome do hábito
+        cor:
+          type: string
+          enum: [RED, BLUE, GREEN, YELLOW, PURPLE, PINK]
+          description: Cor do hábito
+        icone:
+          type: string
+          enum: [WEIGHTS, BOOK, SAVE, MEDITATION, RUNNING, BIKE, HANGER, CUTLERY, FONT, WATER, MOON, CAR, PENCIL, CODE]
+          description: Ícone do hábito
+        maiorSequencia:
+          type: number
+          description: Maior sequência de dias consecutivos
+        sequenciaAtual:
+          type: number
+          description: Sequência atual de dias consecutivos
+        datasDeConclusao:
+          type: array
+          items:
+            type: string
+            format: date-time
+          description: Datas em que o hábito foi concluído
+        ordem:
+          type: number
+          description: Ordem de exibição do hábito
+        isDeleted:
+          type: boolean
+          description: Indica se o hábito foi deletado
+
+    Error:
+      type: object
+      properties:
+        message:
+          type: string
+          description: Mensagem de erro
+
+paths:
+  /api/usuarios/register:
+    post:
+      summary: Registra um novo usuário
+      tags: [Usuários]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - nome
+                - email
+                - senha
+              properties:
+                nome:
+                  type: string
+                  minLength: 3
+                  example: João Silva
+                email:
+                  type: string
+                  format: email
+                  example: joao@example.com
+                senha:
+                  type: string
+                  minLength: 6
+                  example: senha123
+      responses:
+        '201':
+          description: Usuário criado com sucesso
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  usuario:
+                    $ref: '#/components/schemas/Usuario'
+                  token:
+                    type: string
+        '400':
+          description: Erro na validação ou email já em uso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/usuarios/login:
+    post:
+      summary: Faz login de um usuário
+      tags: [Usuários]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - senha
+              properties:
+                email:
+                  type: string
+                  format: email
+                  example: joao@example.com
+                senha:
+                  type: string
+                  example: senha123
+      responses:
+        '200':
+          description: Login realizado com sucesso
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  usuario:
+                    $ref: '#/components/schemas/Usuario'
+                  token:
+                    type: string
+        '401':
+          description: Credenciais inválidas
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/usuarios/perfil:
+    put:
+      summary: Atualiza o perfil do usuário logado
+      tags: [Usuários]
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                nome:
+                  type: string
+                  minLength: 3
+                  example: João Santos
+                email:
+                  type: string
+                  format: email
+                  example: joao.novo@example.com
+      responses:
+        '200':
+          description: Perfil atualizado com sucesso
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  usuario:
+                    $ref: '#/components/schemas/Usuario'
+        '400':
+          description: Erro na validação ou email já em uso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Não autorizado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/habitos:
+    post:
+      summary: Cria um novo hábito
+      tags: [Hábitos]
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - nome
+              properties:
+                nome:
+                  type: string
+                  example: Ler livros
+                cor:
+                  type: string
+                  enum: [RED, BLUE, GREEN, YELLOW, PURPLE, PINK]
+                  example: BLUE
+                icone:
+                  type: string
+                  enum: [WEIGHTS, BOOK, SAVE, MEDITATION, RUNNING, BIKE, HANGER, CUTLERY, FONT, WATER, MOON, CAR, PENCIL, CODE]
+                  example: BOOK
+      responses:
+        '201':
+          description: Hábito criado com sucesso
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  habito:
+                    $ref: '#/components/schemas/Habito'
+        '400':
+          description: Erro na validação
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+    get:
+      summary: Lista todos os hábitos do usuário logado
+      tags: [Hábitos]
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Lista de hábitos
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  habitos:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Habito'
+        '500':
+          description: Erro interno do servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/habitos/{id}/complete:
+    post:
+      summary: Marca um hábito como concluído
+      tags: [Hábitos]
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: ID do hábito
+      responses:
+        '200':
+          description: Hábito marcado como concluído
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  mensagem:
+                    type: string
+                    example: Hábito concluído com sucesso!
+                  sequenciaAtual:
+                    type: number
+                  maiorSequencia:
+                    type: number
+                  habito:
+                    $ref: '#/components/schemas/Habito'
+        '400':
+          description: Hábito não encontrado ou já concluído
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/habitos/{id}:
+    put:
+      summary: Edita um hábito existente
+      tags: [Hábitos]
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: ID do hábito
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                nome:
+                  type: string
+                  example: Ler 30 minutos
+                cor:
+                  type: string
+                  enum: [RED, BLUE, GREEN, YELLOW, PURPLE, PINK]
+                  example: RED
+                icone:
+                  type: string
+                  enum: [WEIGHTS, BOOK, SAVE, MEDITATION, RUNNING, BIKE, HANGER, CUTLERY, FONT, WATER, MOON, CAR, PENCIL, CODE]
+                  example: BOOK
+      responses:
+        '200':
+          description: Hábito atualizado com sucesso
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  habito:
+                    $ref: '#/components/schemas/Habito'
+        '400':
+          description: Erro na validação ou hábito não encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/habitos/reordenar:
+    patch:
+      summary: Reordena os hábitos do usuário
+      tags: [Hábitos]
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - ordemHabitos
+              properties:
+                ordemHabitos:
+                  type: array
+                  items:
+                    type: string
+                  example: ["id1", "id2", "id3"]
+      responses:
+        '200':
+          description: Hábitos reordenados com sucesso
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Ordem atualizada com sucesso.
+        '500':
+          description: Erro ao reordenar
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/stats/globais:
+    get:
+      summary: Retorna estatísticas globais do usuário
+      tags: [Estatísticas]
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Estatísticas globais
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  totalHabitosCriados:
+                    type: number
+                    description: Total de hábitos criados
+                  totalHabitosConcluidos:
+                    type: number
+                    description: Total de vezes que hábitos foram concluídos
+                  diasTotaisEmSequencia:
+                    type: number
+                    description: Soma de todas as sequências atuais
+                  maiorSequenciaGlobal:
+                    type: number
+                    description: Maior sequência entre todos os hábitos
+        '500':
+          description: Erro interno do servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
