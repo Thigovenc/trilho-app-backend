@@ -1,6 +1,8 @@
 import dotenv from 'dotenv';
 dotenv.config();
 import express, { Application, Request, Response } from 'express';
+import swaggerUi from 'swagger-ui-express';
+import { getSwaggerSpec } from './config/swagger';
 import connectDB from './config/database';
 import usuarioRoutes from './routes/usuario.routes';
 import habitoRoutes from './routes/habito.routes';
@@ -15,6 +17,9 @@ app.use(express.json());
 app.get('/', (req: Request, res: Response) => {
   res.status(200).json({ message: 'API do Projeto Trilho está rodando!' });
 });
+
+// Swagger UI
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(getSwaggerSpec()));
 
 app.use('/api/usuarios', usuarioRoutes);
 app.use('/api/habitos', habitoRoutes);
