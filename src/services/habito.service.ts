@@ -110,10 +110,22 @@ export class HabitoService {
       throw new Error('Usuário não encontrado.');
     }
 
-    const updates = listaIds.map((habitoId, index) => {
-      return this.habitoRepository.updateOrdem(habitoId, usuarioId, index);
-    });
+    await Promise.all(
+      listaIds.map(async (habitoId, index) => {
+        const habito = await this.habitoRepository.findById(habitoId);
 
-    await Promise.all(updates);
+        if (!habito) {
+          throw new Error(`Hábito com ID ${habitoId} não encontrado.`);
+        }
+
+        if (habito.usuarioId !== usuarioId) {
+          throw new Error('Você não tem permissão para reordenar este hábito.');
+        }
+
+        habito.atualizarOrdem(index);
+
+        return this.habitoRepository.update(habito);
+      }),
+    );
   }
 }

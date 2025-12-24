@@ -1,4 +1,4 @@
-import { differenceInDays} from 'date-fns';
+import { differenceInDays } from 'date-fns';
 import { EnumHabitColor, EnumHabitIcon } from '../enums/habito.enums';
 
 export interface IHabitoCreateProps {
@@ -82,9 +82,9 @@ export class Habito {
    * Retorna uma string no formato YYYY-MM-DD para comparação
    */
   private static getDateOnly(date: Date): string {
-    const year = date.getUTCFullYear();
-    const month = String(date.getUTCMonth() + 1).padStart(2, '0');
-    const day = String(date.getUTCDate()).padStart(2, '0');
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
     return `${year}-${month}-${day}`;
   }
 
@@ -151,7 +151,7 @@ export class Habito {
     cor?: EnumHabitColor;
     icone?: EnumHabitIcon;
   }): void {
-    if (props.nome) {
+    if (props.nome !== undefined) {
       Habito.validateNome(props.nome);
       this.nome = props.nome;
     }
@@ -163,6 +163,13 @@ export class Habito {
     if (props.icone) {
       this.icone = props.icone;
     }
+  }
+
+  public atualizarOrdem(novaOrdem: number): void {
+    if (novaOrdem < 0) {
+      throw new Error('A ordem deve ser um número não negativo.');
+    }
+    this.ordem = novaOrdem;
   }
 
   public marcarComoDeletado(): void {
