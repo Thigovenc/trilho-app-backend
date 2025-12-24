@@ -6,7 +6,6 @@ const router = Router();
 
 router.use(authMiddleware);
 
-// GET /api/stats/globais
 router.get('/globais', getStatsGlobais);
 
 export default router;

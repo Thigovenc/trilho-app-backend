@@ -17,19 +17,10 @@ import {
 const router = Router();
 router.use(authMiddleware);
 
-// @route   POST /api/habitos
 router.post('/', validate(criarHabitoSchema), criarHabito);
-
-// @route   GET /api/habitos
 router.get('/', listarHabitos);
-
-// @route   POST /api/habitos/:id/complete
 router.post('/:id/complete', marcarComoConcluido);
-
-// @route   PUT /api/habitos/:id
 router.put('/:id', validate(editarHabitoSchema), editarHabito);
-
-// @route   PATCH /api/habitos/reordenar
 router.patch('/reordenar', validate(reordenarHabitosSchema), reordenarHabitos);
 
 export default router;
