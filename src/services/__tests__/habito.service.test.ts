@@ -19,6 +19,7 @@ describe('HabitoService', () => {
       findHabitsByUsuarioId: jest.fn(),
       findById: jest.fn(),
       update: jest.fn(),
+      softDelete: jest.fn(),
       countByUsuarioId: jest.fn(),
       updateOrdem: jest.fn(),
     };
@@ -262,6 +263,51 @@ describe('HabitoService', () => {
       ).rejects.toThrow('Você não tem permissão para editar este hábito.');
 
       expect(mockHabitoRepository.update).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('softDeleteHabito', () => {
+    it('deve remover hábito com sucesso (soft delete)', async () => {
+      const mockHabito = Habito.create({
+        usuarioId,
+        nome: 'Ler livros',
+        ordem: 0,
+      });
+
+      mockHabitoRepository.findById.mockResolvedValue(mockHabito);
+      mockHabitoRepository.softDelete.mockResolvedValue(true);
+
+      await habitoService.softDeleteHabito(habitoId, usuarioId);
+
+      expect(mockHabitoRepository.findById).toHaveBeenCalledWith(habitoId);
+      expect(mockHabitoRepository.softDelete).toHaveBeenCalledWith(habitoId);
+    });
+
+    it('deve lançar erro se hábito não for encontrado', async () => {
+      mockHabitoRepository.findById.mockResolvedValue(null);
+
+      await expect(
+        habitoService.softDeleteHabito(habitoId, usuarioId),
+      ).rejects.toThrow('Hábito não encontrado.');
+
+      expect(mockHabitoRepository.softDelete).not.toHaveBeenCalled();
+    });
+
+    it('deve lançar erro se usuário não for dono do hábito', async () => {
+      const outroUsuarioId = '507f1f77bcf86cd799439099';
+      const mockHabito = Habito.create({
+        usuarioId,
+        nome: 'Ler livros',
+        ordem: 0,
+      });
+
+      mockHabitoRepository.findById.mockResolvedValue(mockHabito);
+
+      await expect(
+        habitoService.softDeleteHabito(habitoId, outroUsuarioId),
+      ).rejects.toThrow('Você não tem permissão para remover este hábito.');
+
+      expect(mockHabitoRepository.softDelete).not.toHaveBeenCalled();
     });
   });
 
