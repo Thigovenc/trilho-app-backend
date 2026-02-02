@@ -12,6 +12,7 @@ import {
   listarHabitos,
   marcarComoConcluido,
   reordenarHabitos,
+  removerHabito,
 } from '../controllers/habito.controller';
 
 const router = Router();
@@ -21,6 +22,7 @@ router.post('/', validate(criarHabitoSchema), criarHabito);
 router.get('/', listarHabitos);
 router.post('/:id/complete', marcarComoConcluido);
 router.put('/:id', validate(editarHabitoSchema), editarHabito);
+router.delete('/:id', removerHabito);
 router.patch('/reordenar', validate(reordenarHabitosSchema), reordenarHabitos);
 
 export default router;
