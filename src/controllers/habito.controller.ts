@@ -118,6 +118,28 @@ export const editarHabito = async (req: IAuthRequest, res: Response) => {
 };
 
 /**
+ * @route   DELETE /api/habitos/:id
+ * @desc    Remove um hábito (Soft Delete)
+ * @access  Privado
+ */
+export const removerHabito = async (req: IAuthRequest, res: Response) => {
+  try {
+    const usuarioId = req.usuario!.id;
+    const habitoId = req.params.id;
+
+    await habitoService.softDeleteHabito(habitoId, usuarioId);
+
+    res.status(200).json({ message: 'Hábito removido com sucesso.' });
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      res.status(400).json({ message: error.message });
+    } else {
+      res.status(500).json({ message: 'Erro interno no servidor.' });
+    }
+  }
+};
+
+/**
  * @route   PATCH /api/habitos/reordenar
  */
 export const reordenarHabitos = async (req: IAuthRequest, res: Response) => {
