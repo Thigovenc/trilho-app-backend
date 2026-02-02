@@ -9,6 +9,7 @@ const mockListarHabitosPorUsuario = jest.fn();
 const mockMarcarComoConcluido = jest.fn();
 const mockEditarHabito = jest.fn();
 const mockReordenarHabitos = jest.fn();
+const mockSoftDeleteHabito = jest.fn();
 
 jest.mock('../../repositories/habito.repository');
 jest.mock('../../repositories/usuario.repository');
@@ -20,6 +21,7 @@ jest.mock('../../services/habito.service', () => {
       marcarComoConcluido: mockMarcarComoConcluido,
       editarHabito: mockEditarHabito,
       reordenarHabitos: mockReordenarHabitos,
+      softDeleteHabito: mockSoftDeleteHabito,
     })),
   };
 });
@@ -55,6 +57,11 @@ describe('HabitoController', () => {
       '/api/habitos/:id',
       mockAuthMiddleware,
       habitoController.editarHabito,
+    );
+    app.delete(
+      '/api/habitos/:id',
+      mockAuthMiddleware,
+      habitoController.removerHabito,
     );
     app.patch(
       '/api/habitos/reordenar',
@@ -200,6 +207,29 @@ describe('HabitoController', () => {
       const response = await request(app).put(`/api/habitos/${habitoId}`).send({
         nome: 'Novo nome',
       });
+
+      expect(response.status).toBe(400);
+      expect(response.body.message).toBe('Hábito não encontrado.');
+    });
+  });
+
+  describe('DELETE /api/habitos/:id', () => {
+    it('deve retornar 200 ao remover hábito com sucesso (soft delete)', async () => {
+      mockSoftDeleteHabito.mockResolvedValue(undefined);
+
+      const response = await request(app).delete(`/api/habitos/${habitoId}`);
+
+      expect(response.status).toBe(200);
+      expect(response.body.message).toBe('Hábito removido com sucesso.');
+      expect(mockSoftDeleteHabito).toHaveBeenCalledWith(habitoId, usuarioId);
+    });
+
+    it('deve retornar 400 quando hábito não encontrado', async () => {
+      mockSoftDeleteHabito.mockRejectedValue(
+        new Error('Hábito não encontrado.'),
+      );
+
+      const response = await request(app).delete(`/api/habitos/${habitoId}`);
 
       expect(response.status).toBe(400);
       expect(response.body.message).toBe('Hábito não encontrado.');
