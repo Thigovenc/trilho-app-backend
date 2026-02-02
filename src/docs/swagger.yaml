@@ -372,6 +372,35 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
+    delete:
+      summary: Remove um hábito (Soft Delete)
+      tags: [Hábitos]
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: ID do hábito
+      responses:
+        '200':
+          description: Hábito removido com sucesso
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Hábito removido com sucesso.
+        '400':
+          description: Hábito não encontrado ou sem permissão
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
 
   /api/habitos/reordenar:
     patch:
