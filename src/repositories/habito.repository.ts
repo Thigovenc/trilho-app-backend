@@ -77,7 +77,7 @@ export class MongooseHabitoRepository implements IHabitoRepository {
     return toDomain(habitoModel);
   }
 
-  async delete(habitoId: string): Promise<boolean> {
+  async softDelete(habitoId: string): Promise<boolean> {
     const resultado = await HabitoModel.findByIdAndUpdate(
       habitoId,
       { isDeleted: true },
