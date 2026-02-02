@@ -5,6 +5,7 @@ export interface IHabitoRepository {
   findHabitsByUsuarioId(usuarioId: string): Promise<Habito[]>;
   findById(id: string): Promise<Habito | null>;
   update(habito: Habito): Promise<Habito>;
+  softDelete(id: string): Promise<boolean>;
   countByUsuarioId(usuarioId: string): Promise<number>;
   updateOrdem(
     habitoId: string,
