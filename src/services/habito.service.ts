@@ -100,6 +100,23 @@ export class HabitoService {
     return habitoAtualizado;
   }
 
+  public async softDeleteHabito(
+    habitoId: string,
+    usuarioId: string,
+  ): Promise<void> {
+    const habito = await this.habitoRepository.findById(habitoId);
+
+    if (!habito) {
+      throw new Error('Hábito não encontrado.');
+    }
+
+    if (habito.usuarioId !== usuarioId) {
+      throw new Error('Você não tem permissão para remover este hábito.');
+    }
+
+    await this.habitoRepository.softDelete(habitoId);
+  }
+
   public async reordenarHabitos(
     usuarioId: string,
     listaIds: string[],
